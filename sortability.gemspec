@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ["Dante.M.Soares@rice.edu"]
   s.homepage    = "https://github.com/openstax/sortability"
   s.summary     = "Rails gem that provides easy to use ordered records"
-  s.description = "Provides ActiveRecord methods that make it easy to allow users to reorder records"
+  s.description = "Provides ActiveRecord methods that make it easy to allow users to sort and reorder records in a list"
   s.license     = "MIT"
 
   s.files = Dir["{lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
