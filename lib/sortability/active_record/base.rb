@@ -18,7 +18,7 @@ module Sortability
           peers_mname = "#{onname}_peers"
           before_validation_mname = "#{onname}_before_validation"
           next_by_mname = "next_by_#{onname}"
-          prev_by_mname = "prev_by_#{onname}"
+          prev_by_mname = "previous_by_#{onname}"
           compact_peers_mname = "compact_#{onname}_peers"
 
           class_exec do
