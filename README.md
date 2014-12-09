@@ -129,7 +129,7 @@ Here are some things that you can do:
   `container` also be automatically updated to create a gap for that `record`.
 
 - Close all gaps in the `sort_position` for the peers of a `record`
-  by calling the `compact_sort_position_peers` method.
+  by calling the `compact_sort_position_peers!` method.
 
 - Get the next or previous record by using the `next_by_sort_position` or
   `previous_by_sort_position` methods.
@@ -138,7 +138,7 @@ The `sort_position` is not guaranteed to contain consecutive numbers.
 When listing the `records`, you should compute their positions
 in application code as you iterate through the list.
 If you need the position for a single `record`, call
-`compact_sort_position_peers` first to close any gaps
+`compact_sort_position_peers!` first to close any gaps
 in its peers, then read `sort_position` directly.
 
 ## Contributing

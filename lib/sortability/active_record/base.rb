@@ -19,7 +19,7 @@ module Sortability
           before_validation_mname = "#{onname}_before_validation"
           next_by_mname = "next_by_#{onname}"
           prev_by_mname = "previous_by_#{onname}"
-          compact_peers_mname = "compact_#{onname}_peers"
+          compact_peers_mname = "compact_#{onname}_peers!"
 
           class_exec do
             before_validation before_validation_mname
@@ -85,19 +85,26 @@ module Sortability
             # Renumbers the peers so that their numbers are sequential,
             # starting at 1
             define_method compact_peers_mname do
+              needs_update = false
+              peers = send(peers_mname)
+              cases = peers.to_a.collect.with_index do |p, i|
+                old_val = p.send(on)
+                new_val = i + 1
+                needs_update = true if old_val != new_val
+
+                # Make sure "on" field in self is up to date
+                send(setter_mname, new_val) if p == self
+
+                "WHEN #{old_val} THEN #{- new_val}"
+              end.join(' ')
+
+              return peers unless needs_update
+
               mysql = \
                 defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter) && \
                 ActiveRecord::Base.connection.instance_of?(
                   ActiveRecord::ConnectionAdapters::MysqlAdapter)
               cend = mysql ? 'END CASE' : 'END'
-
-              peers = send(peers_mname)
-              cases = peers.to_a.collect.with_index do |p, i|
-                # Make sure "on" field in self is up to date
-                send(setter_mname, i + 1) if p == self
-
-                "WHEN #{p.send(on)} THEN #{- (i + 1)}"
-              end.join(' ')
 
               self.class.transaction do
                 peers.reorder(nil)
