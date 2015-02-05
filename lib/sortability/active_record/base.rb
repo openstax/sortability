@@ -26,8 +26,9 @@ module Sortability
 
             # Returns all the sort peers for this record, including self
             define_method peers_mname do |force_scope_load = false|
+              cont = container.nil? ? nil : send(container)
               return send(container).send(inverse_of) \
-                unless force_scope_load || container.nil? || inverse_of.nil?
+                unless force_scope_load || cont.nil? || inverse_of.nil?
 
               relation = self.class.unscoped
               scope_array.each do |s|
