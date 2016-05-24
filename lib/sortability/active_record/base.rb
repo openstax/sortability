@@ -123,20 +123,24 @@ module Sortability
         end
 
         # Defines a sortable has_many relation on the container
-        def sortable_has_many(records, options = {})
-          on = options[:on] || :sort_position
-
-          class_exec do
-            has_many records, lambda { order(on) }, options.except(:on)
+        def sortable_has_many(records, scope_or_options = nil, options_with_scope = {}, &extension)
+          scope, options = extract_association_params(scope_or_options, options_with_scope)
+          if scope.nil?
+            on = options[:on] || :sort_position
+            scope = -> { order(on) }
           end
+
+          class_exec { has_many records, scope, options.except(:on), &extension }
         end
 
         # Defines a sortable belongs_to relation on the child records
-        def sortable_belongs_to(container, options = {})
+        def sortable_belongs_to(container, scope_or_options = nil,
+                                options_with_scope = {}, &extension)
+          scope, options = extract_association_params(scope_or_options, options_with_scope)
           on = options[:on] || :sort_position
 
           class_exec do
-            belongs_to container, options.except(:on, :scope)
+            belongs_to container, scope, options.except(:on, :scope), &extension
 
             reflection = reflect_on_association(container)
             options[:scope] ||= reflection.polymorphic? ? \
@@ -170,6 +174,16 @@ module Sortability
           end
 
           sortable_methods(options)
+        end
+
+        protected
+
+        def extract_association_params(scope_or_options, options_with_scope)
+          if scope_or_options.is_a?(Hash)
+            [nil, scope_or_options]
+          else
+            [scope_or_options, options_with_scope]
+          end
         end
       end
     end
