@@ -87,10 +87,16 @@ sortable_belongs_to :container, inverse_of: :records,
                                 scope: :container_id # , on: :sort_position
 ```
 
+You can also specify a custom association scope:
+
+```rb
+sortable_belongs_to :container, -> { with_deleted },
+                                inverse_of: :records, scope: :container_id # , on: :sort_position
+```
+
 It is highly recommended that you specify the `inverse_of` and `scope` options.
 
-If `records` are sorted globally, without a `container`,
-use the `sortable_class` method instead:
+If `records` are sorted globally, without a `container`, use the `sortable_class` method instead:
 
 ```rb
 sortable_class # on: :sort_position, scope: :sort_group_number
@@ -103,6 +109,16 @@ Simply replace the `has_many :records` relation in your `Container` model with:
 ```rb
 sortable_has_many :records, inverse_of: :container # , on: :sort_position
 ```
+
+You can also specify a custom association scope,
+but in that case you have to order the records yourself:
+
+```rb
+sortable_has_many :records, ->{ with_deleted.order(:sort_position) },
+                            inverse_of: :container # , on: :sort_position
+```
+
+Once again, it is highly recommended that you specify the `inverse_of` option.
 
 ## Usage
 
