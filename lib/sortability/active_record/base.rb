@@ -22,7 +22,7 @@ module Sortability
           compact_peers_mname = "compact_#{onname}_peers!"
 
           class_exec do
-            before_validation before_validation_mname
+            before_validation before_validation_mname.to_sym
 
             # Returns all the sort peers for this record, including self
             define_method peers_mname do |force_scope_load = false|
