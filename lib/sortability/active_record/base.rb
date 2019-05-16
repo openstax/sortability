@@ -56,9 +56,12 @@ module Sortability
                 send(setter_mname, max_val + 1)
               elsif peers.to_a.any? { |p| p != self && p.send(on) == val }
                 # Make a gap for the record
-                peers.where{__send__(on) >= val}.reorder(nil)
+                at = self.class.arel_table
+                peers.where(at[on].gteq(val))
+                     .reorder(nil)
                      .update_all("#{onname} = - (#{onname} + 1)")
-                peers.where{__send__(on) < 0}.reorder(nil)
+                peers.where(at[on].lt(0))
+                     .reorder(nil)
                      .update_all("#{onname} = - #{onname}")
 
                 # Cause peers to load from the DB the next time they are used
@@ -71,8 +74,8 @@ module Sortability
               val = send(on)
               peers = send(peers_mname)
               peers.loaded? ? \
-                peers.to_a.detect{|p| p.send(on) > val} : \
-                peers.where{__send__(on) > val}.first
+                peers.to_a.detect { |p| p.send(on) > val } : \
+                peers.where(peers.arel_table[on].gt(val)).first
             end
 
             # Gets the previous record among the peers
@@ -80,8 +83,8 @@ module Sortability
               val = send(on)
               peers = send(peers_mname)
               peers.loaded? ? \
-                peers.to_a.reverse.detect{|p| p.send(on) < val} : \
-                peers.where{__send__(on) < val}.last
+                peers.to_a.reverse.detect { |p| p.send(on) < val } : \
+                peers.where(peers.arel_table[on].lt(val)).last
             end
 
             # Renumbers the peers so that their numbers are sequential,

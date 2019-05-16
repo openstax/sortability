@@ -49,7 +49,7 @@ $ rails g migration add_sort_position_to_records
 In this migration, you will want something similar to this:
 
 ```rb
-class AddSortPositionToRecords < ActiveRecord::Migration
+class AddSortPositionToRecords < ActiveRecord::Migration[4.2]
   def change
     add_sortable_column :records # , on: :sort_position
     add_sortable_index :records, scope: :container_id # , on: :sort_position
@@ -65,7 +65,7 @@ but you should still create the index using `add_sortable_index`
 to ensure that the index covers the appropriate column(s):
 
 ```rb
-class CreateRecords < ActiveRecord::Migration
+class CreateRecords < ActiveRecord::Migration[4.2]
   def change
     create_table :records do |t|
       t.sortable # on: :sort_position
