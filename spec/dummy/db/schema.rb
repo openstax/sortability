@@ -10,6 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2019_05_23_235430) do
+
+  create_table "containers", force: :cascade do |t|
+    t.integer "sort_position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.integer "container_id", null: false
+    t.integer "sort_position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["container_id", "sort_position"], name: "index_items_on_container_id_and_sort_position", unique: true
+  end
 
 end
