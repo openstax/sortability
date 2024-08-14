@@ -4,7 +4,7 @@ module Sortability
   module ActiveRecord
     module ConnectionAdapters
       RSpec.describe TableDefinition do
-        let(:table_definition) { ::ActiveRecord::ConnectionAdapters::TableDefinition.new :test }
+        let(:table_definition) { ::ActiveRecord::ConnectionAdapters::TableDefinition.new nil, :test }
 
         context 'without :on and :null' do
           let(:options) { { something: :else } }

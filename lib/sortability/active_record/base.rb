@@ -126,24 +126,24 @@ module Sortability
         end
 
         # Defines a sortable has_many relation on the container
-        def sortable_has_many(records, scope_or_options = nil, options_with_scope = {}, &extension)
-          scope, options = extract_association_params(scope_or_options, options_with_scope)
+        def sortable_has_many(records, scope_or_options = nil, **remaining_options, &extension)
+          scope, options = extract_association_params(scope_or_options, remaining_options)
           if scope.nil?
             on = options[:on] || :sort_position
             scope = -> { order(on) }
           end
 
-          class_exec { has_many records, scope, options.except(:on), &extension }
+          class_exec { has_many records, scope, **options.except(:on), &extension }
         end
 
         # Defines a sortable belongs_to relation on the child records
         def sortable_belongs_to(container, scope_or_options = nil,
-                                options_with_scope = {}, &extension)
-          scope, options = extract_association_params(scope_or_options, options_with_scope)
+                                **remaining_options, &extension)
+          scope, options = extract_association_params(scope_or_options, remaining_options)
           on = options[:on] || :sort_position
 
           class_exec do
-            belongs_to container, scope, options.except(:on, :scope), &extension
+            belongs_to container, scope, **options.except(:on, :scope), &extension
 
             reflection = reflect_on_association(container)
             options[:scope] ||= reflection.polymorphic? ? \
@@ -181,11 +181,11 @@ module Sortability
 
         protected
 
-        def extract_association_params(scope_or_options, options_with_scope)
+        def extract_association_params(scope_or_options, remaining_options)
           if scope_or_options.is_a?(Hash)
-            [nil, scope_or_options]
+            [nil, scope_or_options.merge(remaining_options)]
           else
-            [scope_or_options, options_with_scope]
+            [scope_or_options, remaining_options]
           end
         end
       end
