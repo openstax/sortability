@@ -1,0 +1,20 @@
+name: Tests
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+      - name: Setup
+        run: bundle exec rake db:create db:schema:load db:seed --trace
+      - name: Test
+        run: bundle exec rake spec
