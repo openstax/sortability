@@ -13,7 +13,7 @@ module Sortability
             expect(table_definition).to(
               receive(:integer).with(:sort_position, options.merge(null: false))
             )
-            table_definition.sortable options
+            table_definition.sortable(**options)
           end
         end
 
@@ -22,7 +22,7 @@ module Sortability
 
           it '#sortable calls the #integer method with the given options' do
             expect(table_definition).to receive(:integer).with(:pos, options.except(:on))
-            table_definition.sortable options
+            table_definition.sortable(**options)
           end
         end
       end
