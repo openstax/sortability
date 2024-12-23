@@ -7,7 +7,7 @@ module Sortability
         let(:container_1) { Container.new }
         let(:container_2) { Container.new }
 
-        it 'can return the sort peers for a record' do
+        it 'can return the sort peers for a record (after saved)' do
           expect(container_1.sort_position_peers).to be_empty
           expect(container_2.sort_position_peers).to be_empty
 
@@ -86,30 +86,24 @@ module Sortability
       context 'scoped' do
         let(:container_1) { Container.create }
         let(:container_2) { Container.create }
-        let(:item_1)      { Item.new(container: container_1) }
-        let(:item_2)      { Item.new(container: container_1) }
-        let(:item_3)      { Item.new(container: container_2) }
+        let!(:item_1)     { Item.new(container: container_1) }
+        let!(:item_2)     { Item.new(container: container_1) }
+        let!(:item_3)     { Item.new(container: container_2) }
 
-        it 'can return the sort peers for a record' do
-          expect(item_1.sort_position_peers).to be_empty
-          expect(item_2.sort_position_peers).to be_empty
-          expect(item_3.sort_position_peers).to be_empty
+        it 'can return the sort peers for a record (after initialized)' do
+          expect(item_1.sort_position_peers).to eq [ item_1, item_2 ]
+          expect(item_2.sort_position_peers).to eq [ item_1, item_2 ]
+          expect(item_3.sort_position_peers).to eq [ item_3 ]
 
           item_1.save!
-          expect(item_1.sort_position_peers).to eq [ item_1 ]
-          expect(item_2.sort_position_peers).to eq [ item_1 ]
-          expect(item_3.sort_position_peers).to be_empty
-
-          container_1.reload
-          container_2.reload
+          expect(item_1.sort_position_peers).to eq [ item_1, item_2 ]
+          expect(item_2.sort_position_peers).to eq [ item_1, item_2 ]
+          expect(item_3.sort_position_peers).to eq [ item_3 ]
 
           item_2.save!
           expect(item_1.sort_position_peers).to eq [ item_1, item_2 ]
           expect(item_2.sort_position_peers).to eq [ item_1, item_2 ]
-          expect(item_3.sort_position_peers).to be_empty
-
-          container_1.reload
-          container_2.reload
+          expect(item_3.sort_position_peers).to eq [ item_3 ]
 
           item_3.save!
           expect(item_1.sort_position_peers).to eq [ item_1, item_2 ]

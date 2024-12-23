@@ -14,7 +14,7 @@ module Sortability
             :add_column, table, :sort_position, :integer, options.merge(null: false)
           )
 
-          migration.add_sortable_column table, options
+          migration.add_sortable_column table, **options
         end
 
         it '#add_sortable_index can add a sortable index, adding defaults' do
@@ -22,7 +22,7 @@ module Sortability
             :add_index, table, [ :sort_position ], options.merge(unique: true)
           )
 
-          migration.add_sortable_index table, options
+          migration.add_sortable_index table, **options
         end
       end
 
@@ -36,7 +36,7 @@ module Sortability
             :add_column, table, :pos, :integer, options.except(:on)
           )
 
-          migration.add_sortable_column table, options
+          migration.add_sortable_column table, **options
         end
 
         it '#add_sortable_index can add a sortable index with the given options' do
@@ -44,7 +44,7 @@ module Sortability
             :add_index, table, [ :container_id, :pos ], options.except(:on, :scope)
           )
 
-          migration.add_sortable_index table, options
+          migration.add_sortable_index table, **options
         end
       end
     end

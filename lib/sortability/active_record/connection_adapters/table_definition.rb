@@ -3,11 +3,11 @@ module Sortability
     module ConnectionAdapters
       module TableDefinition
         # Adds a non-null sortable column on table creation (no index)
-        def sortable(options = {})
+        def sortable(**options)
           options[:null] = false if options[:null].nil?
           on = options.delete(:on) || :sort_position
 
-          integer on, options
+          integer on, **options
         end
       end
     end

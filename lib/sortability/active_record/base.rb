@@ -8,7 +8,7 @@ module Sortability
       module ClassMethods
         # Defines methods that are used to sort records
         # Use via sortable_belongs_to or sortable_class
-        def sortable_methods(options = {})
+        def sortable_methods(**options)
           on = options[:on] || :sort_position
           container = options[:container]
           inverse_of = options[:inverse_of]
@@ -159,11 +159,11 @@ module Sortability
           end
 
           options[:container] = container
-          sortable_methods(options)
+          sortable_methods(**options)
         end
 
         # Defines a sortable class without a container
-        def sortable_class(options = {})
+        def sortable_class(**options)
           on = options[:on] || :sort_position
           scope = options[:scope]
 
@@ -176,7 +176,7 @@ module Sortability
                           uniqueness: (scope.nil? ? true : { scope: scope })
           end
 
-          sortable_methods(options)
+          sortable_methods(**options)
         end
 
         protected
